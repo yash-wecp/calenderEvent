@@ -1,0 +1,42 @@
+{
+	"author": "WeCP",
+	"license": "ISC",
+	"name": "calender_event",
+	"version": "1.0.0",
+	"description": "Package to create ics file",
+	"scripts": {
+		"build": "tsc -p .",
+        "test": "tsc -p . && mocha ./dist/test/*.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"keywords": [
+		"ical",
+		"icalendar",
+		"ics",
+		"rfc5545"
+	],
+	"main": "./dist/app.js",
+	"typings": "./dist/app.d.ts",
+	"files": [
+		"dist/src/*",
+        "./index.js"
+	],
+	"dependencies": {
+		"lodash": "^4.17.21",
+		"moment": "^2.29.4",
+		"uuid": "^9.0.0"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.3.4",
+		"@types/lodash": "^4.14.191",
+		"@types/mocha": "^10.0.1",
+		"@types/uuid": "^9.0.1",
+        "chai": "^4.3.7",
+        "mocha": "^10.2.0",
+		"tsc-watch": "^6.0.0",
+		"typescript": "^4.9.5"
+	}
+}

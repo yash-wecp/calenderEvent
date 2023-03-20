@@ -1,3 +1,3 @@
-const ics = require('./dist/src/app');
+const {createEvent, isISO} = require('./dist/src/app');
 
-module.exports = ics;
+module.exports = {createEvent, isISO}

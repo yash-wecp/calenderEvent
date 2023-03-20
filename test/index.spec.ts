@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { createEvent } from '../src/app';
+import { createEvent } from '../index';
 
 const validAttributes = {};
 

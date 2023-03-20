@@ -1,11 +1,11 @@
-import { DateInISO, Email } from './isoDate.type';
+import { DateInISO, Email } from './custom.types';
 
 export type ErrorMessage = {
 	error: string;
 	message: string;
 };
 
-type Method =
+export type Method =
 	| 'PUBLISH'
 	| 'REQUEST'
 	| 'REPLY'
@@ -46,6 +46,7 @@ export type CalenderEventData = {
 	location?: string;
 	status?: Status;
 	sequence?: number;
-	summery?: string;
+	summary?: string;
 	timeTransparency?: TimeTransparency;
+	url?: string;
 };

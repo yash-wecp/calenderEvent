@@ -6,6 +6,10 @@
 		"outDir": "./dist",
 		"rootDir": "./",
 		"target": "es6",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+		"declaration": true,
+		"declarationDir": "./types",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
 	}
 }

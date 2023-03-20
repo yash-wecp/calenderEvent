@@ -11,16 +11,18 @@ import {
 	OrganizerProperty,
 	Status,
 	TimeTransparency
-} from '../types/app';
-import { DateInISO } from '../types/custom';
-import { formatDate } from './utils.helper';
+} from './types/app.types';
+import { DateInISO } from './types/custom.types';
+import { formatDate } from './helpers/utils.helper';
 
-export const createEvent = (eventData: any): { error: null | string; value: null | string } => {
-	const result = { error: null, value: null };
+export const createEvent = (
+	eventData: CalenderEventData
+): { error: null | string; value: null | string } => {
+	const result: { error: null | string; value: null | string } = { error: null, value: null };
 	try {
 		result['value'] = generateCalenderEvent(eventData);
 		result['error'] = null;
-	} catch (error) {
+	} catch (error: any) {
 		result['error'] = error;
 		result['value'] = null;
 	}
@@ -38,17 +40,18 @@ const generateCalenderEvent = (eventData: CalenderEventData): string => {
 				resolveMethod(eventData.method),
 				resolveTimezone(),
 				`BEGIN:VEVENT`,
-				resolveStartTime(eventData.startAt, eventData.endAt, eventData.duration),
+				resolveEventTime(eventData.startAt, eventData.endAt, eventData.duration),
 				resolveOrganizer(eventData.organizer),
 				resolveUniqueID(eventData.uid),
 				resolveAttendee(eventData.attendees),
 				resolveCreatedAt(eventData.createdAt),
 				resolveDescription(eventData.description),
+				resolveURL(eventData.url),
 				resolveLastModified(eventData.lastModified),
 				resolveLocation(eventData.location),
 				resolveSequence(eventData.sequence),
 				resolveStatus(eventData.status),
-				resolveSummary(eventData.summery),
+				resolveSummary(eventData.summary),
 				resolveTimeTransparency(eventData.timeTransparency),
 				`END:VEVENT`,
 				`END:VCALENDAR`
@@ -75,7 +78,7 @@ const resolveTimezone = (TzID?: string) => {
 	// `;
 };
 
-const resolveProductID = (productId: string) => {
+const resolveProductID = (productId: string | undefined) => {
 	return `PRODID:${productId || 'Calender_Event'}`;
 };
 
@@ -87,11 +90,11 @@ export const isISO = (input: any): boolean => {
 	return moment(input, moment.ISO_8601, true).isValid();
 };
 
-const resolveStartTime = (
+const resolveEventTime = (
 	startAt?: DateInISO,
 	endAt?: DateInISO,
 	duration?: number
-): string | ErrorMessage => {
+): string | null => {
 	if (!startAt || !isISO(startAt)) {
 		return null;
 	}
@@ -112,11 +115,14 @@ const resolveStartTime = (
 	const startTime: number = moment(startAt).valueOf();
 	const endTime: number = moment(startAt).valueOf() + duration;
 
-	return `
-        DTSTART:${formatDate(startTime)}
-        DTEND:${formatDate(endTime)}
-        DTSTAMP:${formatDate(Date.now())}
-    `;
+	return _.join(
+		[
+			`DTSTART:${formatDate(startTime)}`,
+			`DTEND:${formatDate(endTime)}`,
+			`DTSTAMP:${formatDate(Date.now())}`
+		],
+		'\n'
+	);
 };
 
 const resolveOrganizer = (organizer: Organizer | undefined) => {
@@ -126,27 +132,27 @@ const resolveOrganizer = (organizer: Organizer | undefined) => {
 		_.filter(
 			[
 				`ORGANIZER`,
-				resolveOrganizerProperty('CN', organizer.name),
+				resolveOrganizerProperty('CN', organizer.name || organizer.mailto),
 				resolveOrganizerProperty('SENT-BY', organizer.inviteBy),
 				resolveOrganizerProperty('DIR', organizer.directoryURL),
 				resolveOrganizerProperty('mailto', organizer.mailto)
 			],
 			(value) => value
 		),
-		';'
+		':'
 	);
 };
 
-const resolveOrganizerProperty = (type: OrganizerProperty, value: string) => {
-	if (_.isEmpty(value)) return null;
-	if (type === 'SENT-BY') return `${type}:"mailto:${value}"`;
-	return `${type}:"${value}"`;
+const resolveOrganizerProperty = (type: OrganizerProperty, value: string | undefined) => {
+	if (_.isUndefined(value) || _.isEmpty(value)) return null;
+	if (type === 'SENT-BY') return `${type}:mailto:${value}`;
+	return `${type}:${value}`;
 };
 
 const resolveUniqueID = (uid: string | undefined) => {
 	if (_.isUndefined(uid) || _.isEmpty(uid)) uid = uuid();
 	if (!_.includes(uid, '@')) uid += '@calender.io';
-	return uid;
+	return `UID:${uid}`;
 };
 
 const resolveAttendee = (attendees: Array<Attendee> | undefined) => {
@@ -161,6 +167,10 @@ const resolveCreatedAt = (createdAt: DateInISO | undefined) => {
 const resolveDescription = (description: string | undefined) => {
 	if (_.isUndefined(description) || _.isEmpty(description)) return null;
 	return `DESCRIPTION:${description}`;
+};
+const resolveURL = (url: string | undefined) => {
+	if (_.isUndefined(url) || _.isEmpty(url)) return null;
+	return `URL:${url}`;
 };
 
 const resolveLastModified = (lastModified: DateInISO | undefined) => {
@@ -184,7 +194,7 @@ const resolveStatus = (status: Status | undefined) => {
 
 const resolveSummary = (summary: string | undefined) => {
 	if (_.isUndefined(summary) || _.isEmpty(summary)) return `SUMMARY:null`;
-	return `SUMMARY:${summary}`;
+	return `SUMMARY;LANGUAGE=en-us:${summary}`;
 };
 
 const resolveTimeTransparency = (timeTransparency: TimeTransparency | undefined) => {

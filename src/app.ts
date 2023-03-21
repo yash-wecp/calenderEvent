@@ -188,7 +188,7 @@ const resolveSequence = (sequence: number | undefined) => {
 };
 
 const resolveStatus = (status: Status | undefined) => {
-	if (_.isUndefined(status)) return null;
+	if (_.isUndefined(status)) status = 'CONFIRMED';
 	return `STATUS:${status}`;
 };
 
@@ -198,6 +198,6 @@ const resolveSummary = (summary: string | undefined) => {
 };
 
 const resolveTimeTransparency = (timeTransparency: TimeTransparency | undefined) => {
-	if (_.isUndefined(timeTransparency) || _.isEmpty(timeTransparency)) return null;
+	if (_.isUndefined(timeTransparency) || _.isEmpty(timeTransparency)) timeTransparency = 'OPAQUE';
 	return `TRANSP:${timeTransparency}`;
 };

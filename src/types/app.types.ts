@@ -1,6 +1,8 @@
 import { DateInISO, Email } from './custom.types';
 
-export type Response = { error: null | string; value: null | string };
+export type SuccessResponse = { icsString: string; attachment: any };
+
+export type ErrorResponse = { error: string; errorMessage: string };
 
 export type Method =
 	| 'PUBLISH'

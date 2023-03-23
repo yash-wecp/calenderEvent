@@ -1,5 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment';
+import { CalenderEventData } from '../types/app.types';
+
+export const validateEventData = (eventData: any) => {};
 
 export const formatDate = (milliseconds: number): string => {
 	const array = _.map(

@@ -2,33 +2,37 @@ import _ from 'lodash';
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
 
+// Use ES6 formate
+const mimemessage = require('mimemessage');
+
 import {
 	Attendee,
 	CalenderEventData,
-	Response,
 	Method,
 	Organizer,
 	OrganizerProperty,
 	Status,
-	TimeTransparency
+	TimeTransparency,
+	ErrorResponse,
+	SuccessResponse
 } from './types/app.types';
 import { DateInISO } from './types/custom.types';
-import { formatDate } from './helpers/utils.helper';
+import { formatDate, validateEventData } from './helpers/utils.helper';
 
-export const createEvent = (eventData: CalenderEventData): Response => {
-	const result: Response = { error: null, value: null };
+export const createEvent = (eventData: any): ErrorResponse | SuccessResponse => {
 	try {
-		result['value'] = generateCalenderEvent(eventData);
-		result['error'] = null;
+		validateEventData(eventData);
+		return generateCalenderEvent(eventData);
 	} catch (error: any) {
-		result['error'] = error;
-		result['value'] = null;
+		return {
+			error: '',
+			errorMessage: error
+		};
 	}
-	return result;
 };
 
-const generateCalenderEvent = (eventData: CalenderEventData): string => {
-	return _.join(
+const generateCalenderEvent = (eventData: CalenderEventData): SuccessResponse => {
+	const icsString = _.join(
 		_.filter(
 			[
 				`BEGIN:VCALENDAR`,
@@ -58,6 +62,20 @@ const generateCalenderEvent = (eventData: CalenderEventData): string => {
 		),
 		'\n'
 	);
+
+	const attachmentEntity = mimemessage.factory({
+		contentType: 'text/calendar',
+		contentTransferEncoding: 'base64',
+		body: Buffer.from(icsString)
+			.toString('base64')
+			.replace(/([^\0]{76})/g, '$1\n')
+	});
+	attachmentEntity.header('Content-Disposition', `attachment;filename=invite.ics`);
+
+	return {
+		icsString: icsString,
+		attachment: attachmentEntity
+	};
 };
 
 const resolveTimezone = (TzID?: string) => {
@@ -124,7 +142,9 @@ const resolveEventTime = (
 };
 
 const resolveOrganizer = (organizer: Organizer | undefined) => {
-	if (_.isUndefined(organizer) || _.isEmpty(organizer)) return null;
+	if (_.isUndefined(organizer) || _.isEmpty(organizer) || !_.isString(organizer?.mailto)) {
+		throw new Error('Organizer not found');
+	}
 
 	return _.join(
 		_.filter(

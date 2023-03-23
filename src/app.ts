@@ -14,7 +14,8 @@ import {
 	Status,
 	TimeTransparency,
 	ErrorResponse,
-	SuccessResponse
+	SuccessResponse,
+	AttendeeProperties
 } from './types/app.types';
 import { DateInISO } from './types/custom.types';
 import { formatDate, validateEventData } from './helpers/utils.helper';
@@ -106,11 +107,7 @@ export const isISO = (input: any): boolean => {
 	return moment(input, moment.ISO_8601, true).isValid();
 };
 
-const resolveEventTime = (
-	startAt?: DateInISO,
-	endAt?: DateInISO,
-	duration?: number
-): string | null => {
+const resolveEventTime = (startAt?: DateInISO, endAt?: DateInISO, duration?: number): string | null => {
 	if (!startAt || !isISO(startAt)) {
 		return null;
 	}
@@ -132,11 +129,7 @@ const resolveEventTime = (
 	const endTime: number = moment(startAt).valueOf() + duration;
 
 	return _.join(
-		[
-			`DTSTART:${formatDate(startTime)}`,
-			`DTEND:${formatDate(endTime)}`,
-			`DTSTAMP:${formatDate(Date.now())}`
-		],
+		[`DTSTART:${formatDate(startTime)}`, `DTEND:${formatDate(endTime)}`, `DTSTAMP:${formatDate(Date.now())}`],
 		'\n'
 	);
 };
@@ -146,25 +139,26 @@ const resolveOrganizer = (organizer: Organizer | undefined) => {
 		throw new Error('Organizer not found');
 	}
 
-	return _.join(
-		_.filter(
-			[
-				`ORGANIZER`,
-				resolveOrganizerProperty('CN', organizer.name || organizer.mailto),
-				resolveOrganizerProperty('SENT-BY', organizer.inviteBy),
-				resolveOrganizerProperty('DIR', organizer.directoryURL),
-				resolveOrganizerProperty('mailto', organizer.mailto)
-			],
-			(value) => value
-		),
-		':'
+	return (
+		_.join(
+			_.filter(
+				[
+					`ORGANIZER`,
+					resolveOrganizerProperty('CN', organizer.name || organizer.mailto),
+					resolveOrganizerProperty('SENT-BY', organizer.inviteBy),
+					resolveOrganizerProperty('DIR', organizer.directoryURL)
+				],
+				(value) => value
+			),
+			';'
+		) + `:mailto:${organizer.mailto}`
 	);
 };
 
 const resolveOrganizerProperty = (type: OrganizerProperty, value: string | undefined) => {
 	if (_.isUndefined(value) || _.isEmpty(value)) return null;
-	if (type === 'SENT-BY') return `${type}:mailto:${value}`;
-	return `${type}:${value}`;
+	if (type === 'SENT-BY') return `${type}=mailto:${value}`;
+	return `${type}=${value}`;
 };
 
 const resolveUniqueID = (uid: string | undefined) => {
@@ -174,7 +168,31 @@ const resolveUniqueID = (uid: string | undefined) => {
 };
 
 const resolveAttendee = (attendees: Array<Attendee> | undefined) => {
-	return null;
+	if (_.isUndefined(attendees)) attendees = [];
+	const attendeesArray: Array<string> = _.map(attendees, (attendee) => {
+		return (
+			_.join(
+				_.filter(
+					[
+						`ATTENDEE`,
+						resolveAttendeeProperty('ROLE', attendee.role),
+						resolveAttendeeProperty('CN', attendee.name || attendee.mailto),
+						resolveAttendeeProperty('PARTSTAT', attendee.status),
+						resolveAttendeeProperty('DELEGATED-FROM', attendee.inviteFrom)
+					],
+					(value) => value
+				),
+				';'
+			) + `:MAILTO:${attendee.mailto}`
+		);
+	});
+
+	return _.join(attendeesArray, '\n');
+};
+
+const resolveAttendeeProperty = (type: AttendeeProperties, value: string | undefined) => {
+	if (_.isUndefined(value) || _.isEmpty(value)) return null;
+	return `${type}:${value}`;
 };
 
 const resolveCreatedAt = (createdAt: DateInISO | undefined) => {

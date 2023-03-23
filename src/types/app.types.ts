@@ -4,15 +4,7 @@ export type SuccessResponse = { icsString: string; attachment: any };
 
 export type ErrorResponse = { error: string; errorMessage: string };
 
-export type Method =
-	| 'PUBLISH'
-	| 'REQUEST'
-	| 'REPLY'
-	| 'ADD'
-	| 'CANCEL'
-	| 'REFRESH'
-	| 'COUNTER'
-	| 'DECLINECOUNTER';
+export type Method = 'PUBLISH' | 'REQUEST' | 'REPLY' | 'ADD' | 'CANCEL' | 'REFRESH' | 'COUNTER' | 'DECLINECOUNTER';
 
 export type Organizer = {
 	mailto: Email;
@@ -23,7 +15,15 @@ export type Organizer = {
 
 export type OrganizerProperty = 'CN' | 'mailto' | 'SENT-BY' | 'DIR';
 
-export type Attendee = {};
+export type Attendee = {
+	role?: string;
+	name?: string;
+	status?: 'NEEDS-ACTION' | 'ACCEPTED' | 'DECLINED' | 'TENTATIVE' | 'DELEGATED';
+	inviteFrom?: Email;
+	mailto: Email;
+};
+
+export type AttendeeProperties = 'CN' | 'ROLE' | 'PARTSTAT' | 'DELEGATED-FROM' | 'MAILTO';
 
 export type Status = 'TENTATIVE' | 'CONFIRMED' | 'CANCELLED';
 

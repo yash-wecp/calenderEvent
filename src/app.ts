@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import {
 	Attendee,
 	CalenderEventData,
-	ErrorMessage,
+	Response,
 	Method,
 	Organizer,
 	OrganizerProperty,
@@ -15,10 +15,8 @@ import {
 import { DateInISO } from './types/custom.types';
 import { formatDate } from './helpers/utils.helper';
 
-export const createEvent = (
-	eventData: CalenderEventData
-): { error: null | string; value: null | string } => {
-	const result: { error: null | string; value: null | string } = { error: null, value: null };
+export const createEvent = (eventData: CalenderEventData): Response => {
+	const result: Response = { error: null, value: null };
 	try {
 		result['value'] = generateCalenderEvent(eventData);
 		result['error'] = null;

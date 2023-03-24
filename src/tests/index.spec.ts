@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import _ from 'lodash';
 import { createEvent } from '../../index';
-import { CalenderEventData } from '../types/app.types';
+import { CalenderEventData, CreateEventResponse } from '../types/app.types';
 
 const emptyPayload = {};
 const onlyRequiredAttributes: CalenderEventData = {
@@ -30,10 +30,10 @@ describe('calenderEvent', () => {
 		});
 
 		it('Returns value with only required parameters', () => {
-			const result = createEvent(onlyRequiredAttributes);
+			const result: CreateEventResponse = createEvent(onlyRequiredAttributes);
 			expect(result).to.not.have.keys(['error', 'errorMessage']);
 			expect(result).to.have.keys(['icsString', 'attachment']);
-			expect(_.get(result, 'icsString')).to.have.length.greaterThan(0);
+			expect(result.icsString).to.have.length.greaterThan(0);
 		});
 	});
 });

@@ -15,18 +15,26 @@ import {
 	TimeTransparency,
 	ErrorResponse,
 	SuccessResponse,
-	AttendeeProperties
+	AttendeeProperties,
+	CreateEventResponse
 } from './types/app.types';
 import { formatDate, isEventDataValid } from './helpers/utils.helper';
 
-export const createEvent = (eventData: CalenderEventData | any): ErrorResponse | SuccessResponse => {
+export const createEvent = (eventData: CalenderEventData | any): CreateEventResponse => {
 	try {
 		isEventDataValid(eventData);
-		return generateCalenderEvent(eventData);
+		const successResponse: SuccessResponse = generateCalenderEvent(eventData);
+		return {
+			error: null,
+			errorMessage: null,
+			...successResponse
+		};
 	} catch (error: any) {
 		return {
 			error: '',
-			errorMessage: error
+			errorMessage: error,
+			icsString: null,
+			attachment: null
 		};
 	}
 };

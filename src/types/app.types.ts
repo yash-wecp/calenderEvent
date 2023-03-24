@@ -1,8 +1,10 @@
 export type Email = `${string}@${string}.${string}`;
 
-export type SuccessResponse = { icsString: string; attachment: any };
+export type SuccessResponse = { icsString: string | null; attachment: any };
 
-export type ErrorResponse = { error: string; errorMessage: string };
+export type ErrorResponse = { error: string | null; errorMessage: string | null };
+
+export interface CreateEventResponse extends ErrorResponse, SuccessResponse {}
 
 export type Method = 'PUBLISH' | 'REQUEST' | 'REPLY' | 'ADD' | 'CANCEL' | 'REFRESH' | 'COUNTER' | 'DECLINECOUNTER';
 

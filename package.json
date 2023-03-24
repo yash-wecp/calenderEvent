@@ -2,7 +2,7 @@
 	"author": "WeCP",
 	"license": "ISC",
 	"name": "calender_event",
-	"version": "1.0.15",
+	"version": "1.0.19",
 	"description": "Package to create ics file",
 	"scripts": {
 		"build": "tsc -p .",
@@ -46,7 +46,9 @@
 		"rfc5545"
 	],
 	"files": [
-		"./dist/src/**/*",
+		"./dist/**/*",
+		"./src/types/**/*",
+		"./index.d.ts",
 		"./index.js"
 	]
 }

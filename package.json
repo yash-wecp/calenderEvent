@@ -2,11 +2,11 @@
 	"author": "WeCP",
 	"license": "ISC",
 	"name": "calender_event",
-	"version": "1.0.12",
+	"version": "1.0.15",
 	"description": "Package to create ics file",
 	"scripts": {
 		"build": "tsc -p .",
-		"test": "tsc -p . && mocha ./dist/test/*.js"
+		"test": "tsc -p . && mocha ./dist/tests/*.js"
 	},
 	"husky": {
 		"hooks": {
@@ -16,8 +16,6 @@
 	"main": "./index.js",
 	"types": "./index.d.ts",
 	"dependencies": {
-		"@types/lodash": "^4.14.191",
-		"@types/uuid": "^9.0.1",
 		"lodash": "^4.17.21",
 		"mimemessage": "^1.0.5",
 		"moment": "^2.29.4",
@@ -25,8 +23,10 @@
 	},
 	"devDependencies": {
 		"@types/chai": "^4.3.4",
+		"@types/lodash": "^4.14.191",
 		"@types/mocha": "^10.0.1",
 		"@types/node": "^18.15.5",
+		"@types/uuid": "^9.0.1",
 		"chai": "^4.3.7",
 		"husky": "^8.0.0",
 		"mocha": "^10.2.0",
@@ -47,8 +47,6 @@
 	],
 	"files": [
 		"./dist/src/**/*",
-		"./dist/types/*",
-		"./index.js",
-		"./index.d.ts"
+		"./index.js"
 	]
 }

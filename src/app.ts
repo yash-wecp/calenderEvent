@@ -17,12 +17,11 @@ import {
 	SuccessResponse,
 	AttendeeProperties
 } from './types/app.types';
-import { DateInISO } from './types/custom.types';
-import { formatDate, validateEventData } from './helpers/utils.helper';
+import { formatDate, isEventDataValid } from './helpers/utils.helper';
 
-export const createEvent = (eventData: any): ErrorResponse | SuccessResponse => {
+export const createEvent = (eventData: CalenderEventData | any): ErrorResponse | SuccessResponse => {
 	try {
-		validateEventData(eventData);
+		isEventDataValid(eventData);
 		return generateCalenderEvent(eventData);
 	} catch (error: any) {
 		return {
@@ -107,7 +106,7 @@ export const isISO = (input: any): boolean => {
 	return moment(input, moment.ISO_8601, true).isValid();
 };
 
-const resolveEventTime = (startAt?: DateInISO, endAt?: DateInISO, duration?: number): string | null => {
+const resolveEventTime = (startAt?: string, endAt?: string, duration?: number): string | null => {
 	if (!startAt || !isISO(startAt)) {
 		return null;
 	}
@@ -195,7 +194,7 @@ const resolveAttendeeProperty = (type: AttendeeProperties, value: string | undef
 	return `${type}:${value}`;
 };
 
-const resolveCreatedAt = (createdAt: DateInISO | undefined) => {
+const resolveCreatedAt = (createdAt: string | undefined) => {
 	const date = _.isUndefined(createdAt) ? moment().valueOf() : moment(createdAt).valueOf();
 	return `CREATED:${formatDate(date)}`;
 };
@@ -204,12 +203,13 @@ const resolveDescription = (description: string | undefined) => {
 	if (_.isUndefined(description) || _.isEmpty(description)) return null;
 	return `DESCRIPTION:${description}`;
 };
+
 const resolveURL = (url: string | undefined) => {
 	if (_.isUndefined(url) || _.isEmpty(url)) return null;
 	return `URL:${url}`;
 };
 
-const resolveLastModified = (lastModified: DateInISO | undefined) => {
+const resolveLastModified = (lastModified: string | undefined) => {
 	const date = _.isUndefined(lastModified) ? moment().valueOf() : moment(lastModified).valueOf();
 	return `LAST-MODIFIED:${formatDate(date)}`;
 };
@@ -225,7 +225,7 @@ const resolveSequence = (sequence: number | undefined) => {
 
 const resolveStatus = (status: Status | undefined) => {
 	if (_.isUndefined(status)) status = 'CONFIRMED';
-	return `STATUS:${status}`;
+	return `STATUS:"${status}"`;
 };
 
 const resolveSummary = (summary: string | undefined) => {

@@ -1,4 +1,4 @@
-import { DateInISO, Email } from './custom.types';
+export type Email = `${string}@${string}.${string}`;
 
 export type SuccessResponse = { icsString: string; attachment: any };
 
@@ -25,7 +25,7 @@ export type Attendee = {
 
 export type AttendeeProperties = 'CN' | 'ROLE' | 'PARTSTAT' | 'DELEGATED-FROM' | 'MAILTO';
 
-export type Status = 'TENTATIVE' | 'CONFIRMED' | 'CANCELLED';
+export type Status = 'TENTATIVE' | 'CONFIRMED' | 'CANCELLED' | 'NEEDS-ACTION';
 
 export type TimeTransparency = 'OPAQUE' | 'TRANSPARENT';
 
@@ -34,14 +34,14 @@ export type CalenderEventData = {
 	productId?: string;
 	method?: Method;
 	timezone?: string;
-	createdAt?: DateInISO;
-	startAt?: DateInISO;
-	endAt?: DateInISO;
+	createdAt?: string;
+	startAt?: string;
+	endAt?: string;
 	duration?: number;
 	organizer: Organizer;
 	attendees?: Array<Attendee>;
 	description?: string;
-	lastModified?: DateInISO;
+	lastModified?: string;
 	location?: string;
 	status?: Status;
 	sequence?: number;

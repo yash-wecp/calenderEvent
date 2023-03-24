@@ -4,12 +4,12 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"outDir": "./dist",
-		"rootDir": "./",
+		"rootDir": "./src",
 		"target": "es6",
         "skipLibCheck": true,
 		"declaration": true,
 		"declarationDir": "./dist/types",
 		"forceConsistentCasingInFileNames": true,
-		"strict": true,
-	}
+		"strict": true
+	},
 }

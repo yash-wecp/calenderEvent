@@ -1,15 +1,15 @@
 {
 	"compilerOptions": {
+		"declaration": true,
+		"declarationDir": "./dist",	
 		"esModuleInterop": true, 
+		"forceConsistentCasingInFileNames": true,
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"outDir": "./dist",
 		"rootDir": "./src",
+		"strict": true,
 		"target": "es6",
         "skipLibCheck": true,
-		"declaration": true,
-		"declarationDir": "./dist",	
-		"forceConsistentCasingInFileNames": true,
-		"strict": true
 	}
 }

@@ -25,14 +25,16 @@ describe('calenderEvent', () => {
 	describe('.createEvent', () => {
 		it('Returns an error on empty payload', () => {
 			const result = createEvent(emptyPayload);
-			expect(result).to.have.keys(['error', 'errorMessage']);
-			expect(result).to.not.have.keys(['icsString', 'attachment']);
+			expect(result).to.have.keys(['error', 'errorMessage', 'icsString', 'attachment']);
+			expect(result.icsString).to.be.a('null');
+			expect(result.attachment).to.be.a('null');
 		});
 
 		it('Returns value with only required parameters', () => {
 			const result: CreateEventResponse = createEvent(onlyRequiredAttributes);
-			expect(result).to.not.have.keys(['error', 'errorMessage']);
-			expect(result).to.have.keys(['icsString', 'attachment']);
+			expect(result).to.have.keys(['error', 'errorMessage', 'icsString', 'attachment']);
+			expect(result.error).to.be.a('null');
+			expect(result.errorMessage).to.be.a('null');
 			expect(result.icsString).to.have.length.greaterThan(0);
 		});
 	});

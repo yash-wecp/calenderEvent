@@ -2,9 +2,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import { v4 as uuid } from 'uuid';
 
-// Use ES6 formate
-const mimemessage = require('mimemessage');
-
 import {
 	Attendee,
 	CalenderEventData,
@@ -13,12 +10,14 @@ import {
 	OrganizerProperty,
 	Status,
 	TimeTransparency,
-	ErrorResponse,
 	SuccessResponse,
 	AttendeeProperties,
 	CreateEventResponse
 } from './types/app.types';
 import { formatDate, isEventDataValid } from './helpers/utils.helper';
+
+// Use ES6 formate
+const mimemessage = require('mimemessage');
 
 export const createEvent = (eventData: CalenderEventData | any): CreateEventResponse => {
 	try {
@@ -87,19 +86,33 @@ const generateCalenderEvent = (eventData: CalenderEventData): SuccessResponse =>
 };
 
 const resolveTimezone = (TzID?: string) => {
-	return null;
-	// `
-	//     BEGIN:VTIMEZONE
-	//     TZID:Asia/Kolkata,
-	//     X-LIC-LOCATION:Asia/Kolkata
-	//     BEGIN:STANDARD
-	//     TZOFFSETFROM:+0530
-	//     TZOFFSETTO:+0530
-	//     TZNAME:IST
-	//     DTSTART:19700101T000000
-	//     END:STANDARD
-	//     END:VTIMEZONE
-	// `;
+	return _.join(
+		_.map(
+			_.split(
+				`BEGIN:VTIMEZONE
+				TZID:Europe/London
+				X-LIC-LOCATION:Europe/London
+				BEGIN:DAYLIGHT
+				TZOFFSETFROM:+0000
+				TZOFFSETTO:+0100
+				TZNAME:BST
+				DTSTART:19700329T010000
+				RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+				END:DAYLIGHT
+				BEGIN:STANDARD
+				TZOFFSETFROM:+0100
+				TZOFFSETTO:+0000
+				TZNAME:GMT
+				DTSTART:19701025T020000
+				RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+				END:STANDARD
+				END:VTIMEZONE`,
+				'\n'
+			),
+			(value) => _.trim(value)
+		),
+		'\n'
+	);
 };
 
 const resolveProductID = (productId: string | undefined) => {
@@ -209,12 +222,12 @@ const resolveCreatedAt = (createdAt: string | undefined) => {
 
 const resolveDescription = (description: string | undefined) => {
 	if (_.isUndefined(description) || _.isEmpty(description)) return null;
-	return `DESCRIPTION:${description}`;
+	return _.replace(`DESCRIPTION:${description}`, /(.{75})/g, '$1\n ');
 };
 
 const resolveURL = (url: string | undefined) => {
 	if (_.isUndefined(url) || _.isEmpty(url)) return null;
-	return `URL:${url}`;
+	return _.replace(`URL:${url}`, /(.{74})/g, '$1\n ');
 };
 
 const resolveLastModified = (lastModified: string | undefined) => {
@@ -233,12 +246,12 @@ const resolveSequence = (sequence: number | undefined) => {
 
 const resolveStatus = (status: Status | undefined) => {
 	if (_.isUndefined(status)) status = 'CONFIRMED';
-	return `STATUS:"${status}"`;
+	return `STATUS:${status}`;
 };
 
 const resolveSummary = (summary: string | undefined) => {
 	if (_.isUndefined(summary) || _.isEmpty(summary)) return `SUMMARY:null`;
-	return `SUMMARY;LANGUAGE=en-us:${summary}`;
+	return `SUMMARY:${summary}`;
 };
 
 const resolveTimeTransparency = (timeTransparency: TimeTransparency | undefined) => {

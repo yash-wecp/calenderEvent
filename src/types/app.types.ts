@@ -1,8 +1,8 @@
-export type Email = `${string}@${string}.${string}`;
+type Email = `${string}@${string}.${string}`;
 
 export type SuccessResponse = { icsString: string | null; attachment: any };
 
-export type ErrorResponse = { error: string | null; errorMessage: string | null };
+type ErrorResponse = { error: string | null; errorMessage: string | null };
 
 export interface CreateEventResponse extends ErrorResponse, SuccessResponse {}
 

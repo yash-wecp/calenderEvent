@@ -32,6 +32,7 @@ const calenderEvent = createEvent(eventDetails);
 
 #### Properties for event in calender (VEVENT)
 
+
 | Key | Notes | Data type | Required | Default |
 
 | :--- | :---: | :---: | :---: | :---: |

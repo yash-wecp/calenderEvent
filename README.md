@@ -21,10 +21,10 @@ const createEvent = require('calender_event');
 
 // or, in ESM: import { createEvent } from 'calender_event'
 
-// Create event object. Find details on parameters below
+// Create event object. Find details for parameters below
 
 const eventDetails = {
-	// Event properties. Find details on parameters below
+	// Event properties
 };
 
 const calenderEvent = createEvent(eventDetails);

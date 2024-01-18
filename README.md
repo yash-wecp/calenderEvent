@@ -82,7 +82,7 @@ const calenderEvent = createEvent(eventDetails);
 
 | **inviteBy** | Email of the person sharing the event | string | NO | null |
 
-| **directoryURL** | URL to the person's / organization's profile | URL | NO | null |
+| **directoryURL** | URL to the person's \/ organization's profile | URL | NO | null |
 
 ## Reference
 

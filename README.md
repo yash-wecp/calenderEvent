@@ -34,7 +34,7 @@ const calenderEvent = createEvent(eventDetails);
 
 | Key | Notes | Data type | Required | Default |
 
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------- | --------------------- |
+| :--- | :---: | :---: | :---: | :---: |
 
 | **uid** | Unique Id to identify the event | string | NO | UUIDv4 |
 
@@ -74,7 +74,7 @@ const calenderEvent = createEvent(eventDetails);
 
 | Key | Note | Data type | Required | Default |
 
-| ---------------- | -------------------------------------------- | --------- | -------- | -------- |
+| :--- | :---: | :---: | :---: | :---: |
 
 | **mailto** | Email id on which the receiver can reply to | email | YES | NA |
 
